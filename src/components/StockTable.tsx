@@ -1,26 +1,17 @@
 import * as React from "react";
 import {
-  TextField,
   TableContainer,
   Table,
-  TableHead,
-  TableRow,
-  TableCell,
   TableBody,
   Paper,
   TablePagination,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { TextField, TableHeader, TableRow } from "./atomics/index";
 import { getStockListForAutocomplete } from "../../api";
+import { IStock } from "../types";
 
-interface IStock {
-  symbol: string;
-  name: string;
-  currency: string;
-  type: string;
-}
 
-const StockPreferenceForm: React.FC = () => {
+const StockTable: React.FC = () => {
   const [searchName, setSearchName] = React.useState<string>("");
   const [searchSymbol, setSearchSymbol] = React.useState<string>("");
   const [page, setPage] = React.useState<number>(0);
@@ -77,41 +68,25 @@ const StockPreferenceForm: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <TextField
         label="Buscar por nombre"
-        variant="outlined"
         value={searchName}
         onChange={handleSearchNameChange}
       />
       <TextField
         label="Buscar por símbolo"
-        variant="outlined"
         value={searchSymbol}
         onChange={handleSearchSymbolChange}
       />
       <TableContainer component={Paper}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Símbolo</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Moneda</TableCell>
-              <TableCell>Tipo</TableCell>
-            </TableRow>
-          </TableHead>
+          <TableHeader />
           <TableBody>
             {filteredStocks
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((stock) => (
-                <TableRow key={stock.symbol}>
-                  <TableCell>
-                    <Link to={`/stock/${stock.symbol}`}>{stock.symbol}</Link>
-                  </TableCell>
-                  <TableCell>{stock.name}</TableCell>
-                  <TableCell>{stock.currency}</TableCell>
-                  <TableCell>{stock.type}</TableCell>
-                </TableRow>
+                <TableRow key={stock.symbol} stock={stock} />
               ))}
           </TableBody>
         </Table>
@@ -125,8 +100,8 @@ const StockPreferenceForm: React.FC = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
-    </div>
+    </>
   );
 };
 
-export default StockPreferenceForm;
+export default StockTable;

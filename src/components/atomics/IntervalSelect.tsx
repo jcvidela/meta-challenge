@@ -15,10 +15,16 @@ const IntervalSelect: React.FC<IntervalSelectProps> = ({
 
   return (
     <div style={style}>
-      <label style={{ marginRight: '5px' }}>Intervalo:</label>
+      <label style={styles.label}>Intervalo:</label>
       <SelectInput value={value} onChange={onChange} options={options} />
     </div>
   );
+};
+
+const styles = {
+  label: {
+    marginRight: "5px",
+  },
 };
 
 export default IntervalSelect;

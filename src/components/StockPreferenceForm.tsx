@@ -1,10 +1,13 @@
 import React from "react";
 import { getStockQuote } from "../../api";
-import RadioButton from "./atomics/RadioButton";
-import DateInput from "./atomics//DateInput";
-import IntervalSelect from "./atomics//IntervalSelect";
-import Button from "./atomics/Button";
+import {
+  RadioButton,
+  DateInput,
+  IntervalSelect,
+  Button,
+} from "./atomics/index";
 import { IStockPreferenceFormProps } from "../types";
+import { getCurrentDay } from "../helpers";
 
 const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
   symbol,
@@ -43,6 +46,7 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
   }
 
   function handleStartDateChange(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log(event.target.value);
     setStartDate(event.target.value);
   }
 
@@ -51,47 +55,122 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
   }
 
   function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
+    // If the user selects "realtime", set the start and end date to the current day
+    if (event.target.value === "realtime") {
+      const date = getCurrentDay();
+      setStartDate(date);
+      setEndDate(date);
+    }
     setRealTime(event.target.value === "realtime");
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <RadioButton
-        name="dataOption"
-        value="realtime"
-        checked={realTime}
-        onChange={handleCheckboxChange}
-        label="Tiempo real: (utiliza la fecha actual, con el intervalo seleccionado)"
-      />
-
-      <div style={{ margin: "10px 0px" }} />
-
-      <div style={{ display: "flex" }}>
-        <RadioButton
-          name="dataOption"
-          value="history"
-          checked={!realTime}
-          onChange={handleCheckboxChange}
-          label="Historico:"
-        />
-        <div style={{ margin: "0px 5px" }} />
-        <DateInput
-          disabled={realTime}
-          value={startDate}
-          onChange={handleStartDateChange}
-        />
-        <DateInput
-          disabled={realTime}
-          value={endDate}
-          onChange={handleEndDateChange}
-        />
+    <form onSubmit={handleSubmit} style={styles.form}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={styles.headerTitle}>TSLA - Tesla Inc - USD</div>
+        <div style={styles.headerUser}>Usuario: Juan</div>
       </div>
-      <div style={{ margin: "10px 0px" }} />
-      <IntervalSelect value={interval} onChange={handleIntervalChange} />
-      <div style={{ margin: "10px 0px" }} />
-      <Button type="submit">Graficar</Button>
+      <div style={styles.headerOptions}>
+        <div style={styles.radioContainer}>
+          <RadioButton
+            name="dataOption"
+            value="realtime"
+            checked={realTime}
+            onChange={handleCheckboxChange}
+            label="Tiempo Real"
+          />
+          <span style={styles.description}>
+            (utiliza la fecha actual, al graficar esta opción, se debe
+            actualizar el gráfico en forma automática según el intervalo
+            seleccionado)
+          </span>
+        </div>
+        <div style={styles.radioContainer}>
+          <RadioButton
+            name="dataOption"
+            value="history"
+            checked={!realTime}
+            onChange={handleCheckboxChange}
+            label="Histórico"
+          />
+          <div style={{ margin: "0px 5px" }}>
+            <DateInput
+              disabled={realTime}
+              value={startDate}
+              onChange={handleStartDateChange}
+              style={styles.dateInput}
+            />
+            <DateInput
+              disabled={realTime}
+              value={endDate}
+              onChange={handleEndDateChange}
+              style={styles.dateInput}
+            />
+          </div>
+        </div>
+        <IntervalSelect
+          value={interval}
+          onChange={handleIntervalChange}
+          style={styles.intervalSelect}
+        />
+        <Button variant="contained" type="submit">
+          Graficar
+        </Button>
+      </div>
     </form>
   );
+};
+
+const styles = {
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    borderBottom: "1px solid #ccc",
+    padding: "10px",
+    marginBottom: "20px",
+  },
+  headerTitle: {
+    fontSize: "24px",
+    marginBottom: "10px",
+  },
+  headerOptions: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  label: {
+    marginRight: "20px",
+    marginBottom: "10px",
+  },
+  description: {
+    fontSize: "12px",
+    color: "#666",
+    marginLeft: "5px",
+  },
+  radioContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "10px",
+  },
+  dateInput: {
+    padding: "5px",
+    fontSize: "14px",
+    margin: "10px 0px",
+  },
+  intervalSelect: {
+    padding: "5px",
+    fontSize: "17px",
+    marginBottom: "10px",
+  },
+  button: {
+    padding: "5px 10px",
+    fontSize: "14px",
+    cursor: "pointer",
+  },
+  headerUser: {
+    marginTop: "10px",
+    fontSize: "18px",
+    textAlign: "right",
+  },
 };
 
 export default StockPreferenceForm;

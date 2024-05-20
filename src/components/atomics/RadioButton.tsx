@@ -8,7 +8,7 @@ const RadioButton: React.FC<IRadioButtonProps> = ({
   onChange,
   label,
 }) => (
-  <div>
+  <>
     <input
       type="radio"
       name={name}
@@ -17,7 +17,7 @@ const RadioButton: React.FC<IRadioButtonProps> = ({
       onChange={onChange}
     />
     <label>{label}</label>
-  </div>
+  </>
 );
 
 export default RadioButton;

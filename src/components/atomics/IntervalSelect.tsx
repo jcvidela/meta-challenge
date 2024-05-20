@@ -1,10 +1,11 @@
 import * as React from "react";
 import SelectInput from "./SelectInput";
-import { IIntervalSelectProps } from "../../types";
+import { IntervalSelectProps } from "../../types";
 
-const IntervalSelect: React.FC<IIntervalSelectProps> = ({
+const IntervalSelect: React.FC<IntervalSelectProps> = ({
   value,
   onChange,
+  style,
 }) => {
   const options = [
     { value: "1min", label: "1 minuto" },
@@ -13,10 +14,10 @@ const IntervalSelect: React.FC<IIntervalSelectProps> = ({
   ];
 
   return (
-    <label>
-      Intervalo:
+    <div style={style}>
+      <label style={{ marginRight: '5px' }}>Intervalo:</label>
       <SelectInput value={value} onChange={onChange} options={options} />
-    </label>
+    </div>
   );
 };
 

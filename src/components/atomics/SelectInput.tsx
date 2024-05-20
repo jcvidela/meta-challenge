@@ -6,7 +6,7 @@ const SelectInput: React.FC<ISelectInputProps> = ({
   onChange,
   options,
 }) => (
-  <select value={value} onChange={onChange}>
+  <select value={value} onChange={onChange} style={styles.select}>
     {options.map((option) => (
       <option key={option.value} value={option.value}>
         {option.label}
@@ -14,5 +14,12 @@ const SelectInput: React.FC<ISelectInputProps> = ({
     ))}
   </select>
 );
+
+const styles = {
+  select: {
+    width: '12rem',
+    height: '2rem',
+  },
+};
 
 export default SelectInput;

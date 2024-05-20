@@ -7,7 +7,7 @@ import {
   TablePagination,
 } from "@mui/material";
 import { TextField, TableHeader, TableRow } from "./atomics/index";
-import { getStockListForAutocomplete } from "../../api";
+import { getStockListForAutocomplete } from "../api";
 import { IStock } from "../types";
 
 

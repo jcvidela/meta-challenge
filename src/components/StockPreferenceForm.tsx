@@ -1,5 +1,5 @@
 import React from "react";
-import { getStockData, getStockQuote } from "../../api";
+import { getStockData, getStockQuote } from "../api";
 import {
   RadioButton,
   DateInput,

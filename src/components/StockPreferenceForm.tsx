@@ -1,26 +1,24 @@
-import * as React from "react";
+import React from "react";
 import { getStockQuote } from "../../api";
-import { IStockData } from "./../types";
-
-interface IStockPreferenceFormProps {
-  symbol: string;
-  handleSetStockData: (data: IStockData) => void;
-}
+import RadioButton from "./atomics/RadioButton";
+import DateInput from "./atomics//DateInput";
+import IntervalSelect from "./atomics//IntervalSelect";
+import Button from "./atomics/Button";
+import { IStockPreferenceFormProps } from "../types";
 
 const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
-  handleSetStockData,
   symbol,
+  handleSetStockData,
 }) => {
-  const [interval, setInterval] = React.useState<string>("5min");
-  const [startDate, setStartDate] = React.useState<string>("");
-  const [endDate, setEndDate] = React.useState<string>("");
-  const [realTime, setRealTime] = React.useState<boolean>(true); // Switch between real time and historical
+  const [interval, setInterval] = React.useState("5min");
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
+  const [realTime, setRealTime] = React.useState(true);
 
   React.useEffect(() => {
     async function fetchDefaultData() {
       try {
         const data = await getStockQuote(symbol, interval, startDate, endDate);
-
         handleSetStockData(data);
       } catch (error) {
         console.error("Error fetching default stock data:", error);
@@ -57,58 +55,42 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div>
-            <input
-              type="radio"
-              value="realtime"
-              checked={realTime}
-              onChange={handleCheckboxChange}
-              name="dataOption"
-            />
-            <label>
-              Tiempo real: (utiliza la fecha actual, con el intervalo
-              seleccionado)
-            </label>
-          </div>
-          <div style={{ margin: "10px 0px" }} />
-          <label>
-            <input
-              type="radio"
-              value="history"
-              onChange={handleCheckboxChange}
-              name="dataOption"
-            />
-            Historico:
-            <input
-              type="date"
-              disabled={realTime}
-              value={startDate}
-              onChange={handleStartDateChange}
-            />
-            <input
-              type="date"
-              disabled={realTime}
-              value={endDate}
-              onChange={handleEndDateChange}
-            />
-          </label>
-          <div style={{ margin: "10px 0px" }} />
-          <label>
-            Intervalo:
-            <select value={interval} onChange={handleIntervalChange}>
-              <option value="1min">1 minutos</option>
-              <option value="5min">5 minutos</option>
-              <option value="15min">15 minutos</option>
-            </select>
-          </label>
-        </div>
-        <div style={{ margin: "10px 0px" }} />
-        <button type="submit">Graficar</button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit}>
+      <RadioButton
+        name="dataOption"
+        value="realtime"
+        checked={realTime}
+        onChange={handleCheckboxChange}
+        label="Tiempo real: (utiliza la fecha actual, con el intervalo seleccionado)"
+      />
+
+      <div style={{ margin: "10px 0px" }} />
+
+      <div style={{ display: "flex" }}>
+        <RadioButton
+          name="dataOption"
+          value="history"
+          checked={!realTime}
+          onChange={handleCheckboxChange}
+          label="Historico:"
+        />
+        <div style={{ margin: "0px 5px" }} />
+        <DateInput
+          disabled={realTime}
+          value={startDate}
+          onChange={handleStartDateChange}
+        />
+        <DateInput
+          disabled={realTime}
+          value={endDate}
+          onChange={handleEndDateChange}
+        />
+      </div>
+      <div style={{ margin: "10px 0px" }} />
+      <IntervalSelect value={interval} onChange={handleIntervalChange} />
+      <div style={{ margin: "10px 0px" }} />
+      <Button type="submit">Graficar</Button>
+    </form>
   );
 };
 

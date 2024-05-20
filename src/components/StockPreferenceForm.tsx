@@ -1,22 +1,23 @@
 import React from "react";
-import { getStockQuote } from "../../api";
+import { getStockData, getStockQuote } from "../../api";
 import {
   RadioButton,
   DateInput,
   IntervalSelect,
   Button,
 } from "./atomics/index";
-import { IStockPreferenceFormProps } from "../types";
+import { IStock, IStockPreferenceFormProps } from "../types";
 import { getCurrentDay } from "../helpers";
 
 const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
-  symbol,
   handleSetStockData,
+  symbol,
 }) => {
   const [interval, setInterval] = React.useState("5min");
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
   const [realTime, setRealTime] = React.useState(true);
+  const [detailStock, setDetailStock] = React.useState<IStock | null>(null);
 
   React.useEffect(() => {
     async function fetchDefaultData() {
@@ -25,6 +26,13 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
         handleSetStockData(data);
       } catch (error) {
         console.error("Error fetching default stock data:", error);
+      }
+
+      try {
+        const { data } = await getStockData(symbol);
+        setDetailStock(data[0]);
+      } catch (error) {
+        console.error("Error fetching stock:", error);
       }
     }
 
@@ -46,7 +54,6 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
   }
 
   function handleStartDateChange(event: React.ChangeEvent<HTMLInputElement>) {
-    console.log(event.target.value);
     setStartDate(event.target.value);
   }
 
@@ -66,8 +73,10 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={styles.headerTitle}>TSLA - Tesla Inc - USD</div>
+      <div style={styles.headerContainer}>
+        <div style={styles.headerTitle}>
+          {symbol} - {detailStock?.name} - {detailStock?.currency}
+        </div>
         <div style={styles.headerUser}>Usuario: Juan</div>
       </div>
       <div style={styles.headerOptions}>
@@ -93,7 +102,7 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
             onChange={handleCheckboxChange}
             label="Histórico"
           />
-          <div style={{ margin: "0px 5px" }}>
+          <div style={styles.dateInputContainer}>
             <DateInput
               disabled={realTime}
               value={startDate}
@@ -113,7 +122,7 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
           onChange={handleIntervalChange}
           style={styles.intervalSelect}
         />
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" style={styles.button}>
           Graficar
         </Button>
       </div>
@@ -128,6 +137,10 @@ const styles = {
     borderBottom: "1px solid #ccc",
     padding: "10px",
     marginBottom: "20px",
+  },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
   },
   headerTitle: {
     fontSize: "24px",
@@ -150,6 +163,9 @@ const styles = {
     display: "flex",
     alignItems: "center",
     marginBottom: "10px",
+  },
+  dateInputContainer: {
+    margin: "0px 5px",
   },
   dateInput: {
     padding: "5px",

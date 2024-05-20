@@ -3,6 +3,21 @@ import axios from "axios";
 const BASE_URL = "https://api.twelvedata.com";
 const API_KEY = "cb192ad241b44c4e87a7f63291f8d574";
 
+export const getStockData = async (symbol: string) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/stocks`, {
+      params: {
+        source: "docs",
+        symbol: symbol,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching stock data for symbol ${symbol}`, error);
+    throw error;
+  }
+};
+
 export const getStockListForAutocomplete = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/stocks`, {

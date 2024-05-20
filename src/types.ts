@@ -22,3 +22,10 @@ export interface IMetaStockData {
     values: IValuesStockData[];
     status: string;
   }
+
+  export interface IStock {
+    symbol: string;
+    name: string;
+    currency: string;
+    type: string;
+  }

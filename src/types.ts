@@ -46,6 +46,7 @@ export interface IDateInputProps {
   disabled: boolean;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  style?: React.CSSProperties;
 }
 
 export interface ISelectInputProps {
@@ -55,13 +56,15 @@ export interface ISelectInputProps {
 }
 
 export interface IButtonProps {
-  type: "button" | "submit" | "reset";
+  type: "submit" | "button" | "reset";
+  variant: "contained" | "outlined" | "text";
   children: React.ReactNode;
 }
 
-export interface IIntervalSelectProps {
+export interface IntervalSelectProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  style?: React.CSSProperties;
 }
 
 export interface IStockPreferenceFormProps {

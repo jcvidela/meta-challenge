@@ -14,19 +14,19 @@ const ChartScreen: React.FC<IChartProps> = ({ stockData }) => {
       text: symbol,
     },
     xAxis: {
-      categories: stockData.values.map((item: IValuesStockData) => item.datetime), // Eje X con los intervalos de tiempo
+      categories: stockData.values.map((item: IValuesStockData) => item.datetime),
       title: {
-        text: "Intervalo",
+        text: "Interval",
       },
     },
     yAxis: {
       title: {
-        text: "Cotización",
+        text: "Price",
       },
     },
     series: [
       {
-        name: "Intervalo",
+        name: "Interval",
         data: stockData.values.map((item: IValuesStockData) => parseFloat(item.close)),
       },
     ],

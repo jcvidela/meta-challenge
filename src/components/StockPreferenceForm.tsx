@@ -13,10 +13,10 @@ const StockPreferenceForm: React.FC<IStockPreferenceFormProps> = ({
   handleSetStockData,
   symbol,
 }) => {
-  const [interval, setInterval] = React.useState("5min");
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
-  const [realTime, setRealTime] = React.useState(true);
+  const [interval, setInterval] = React.useState<string>("5min");
+  const [startDate, setStartDate] = React.useState<string>("");
+  const [endDate, setEndDate] = React.useState<string>("");
+  const [realTime, setRealTime] = React.useState<boolean>(true);
   const [detailStock, setDetailStock] = React.useState<IStock | null>(null);
 
   React.useEffect(() => {

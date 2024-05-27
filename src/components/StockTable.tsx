@@ -7,11 +7,13 @@ import {
   TablePagination,
 } from "@mui/material";
 import { TextField, TableHeader, TableRow } from "./atomics/index";
+import { ClipLoader } from "react-spinners";
 import { getStockListForAutocomplete } from "../api";
 import { IStock } from "../types";
 import useDebounce from "../hooks/useDebounce";
 
 const StockTable: React.FC = () => {
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [searchName, setSearchName] = React.useState<string>("");
   const [searchSymbol, setSearchSymbol] = React.useState<string>("");
   const [page, setPage] = React.useState<number>(0);
@@ -31,12 +33,15 @@ const StockTable: React.FC = () => {
   }, [debouncedSearchName, debouncedSearchSymbol]);
 
   async function fetchStockList() {
+    setLoading(true);
     try {
       const stockList = await getStockListForAutocomplete();
       setStocks(stockList.data);
       setFilteredStocks(stockList.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching stock list:", error);
+      setLoading(false);
     }
   }
 
@@ -87,13 +92,16 @@ const StockTable: React.FC = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHeader />
-          <TableBody>
-            {filteredStocks
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((stock) => (
-                <TableRow key={stock.symbol} stock={stock} />
-              ))}
-          </TableBody>
+          <ClipLoader color="#0000ff" loading={loading} size={50} />
+          {!loading && (
+            <TableBody>
+              {filteredStocks
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((stock) => (
+                  <TableRow key={stock.symbol} stock={stock} />
+                ))}
+            </TableBody>
+          )}
         </Table>
         <TablePagination
           rowsPerPageOptions={[25, 50, 100]}

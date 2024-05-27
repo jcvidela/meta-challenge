@@ -9,7 +9,7 @@ import {
 import { TextField, TableHeader, TableRow } from "./atomics/index";
 import { getStockListForAutocomplete } from "../api";
 import { IStock } from "../types";
-
+import useDebounce from "../hooks/useDebounce";
 
 const StockTable: React.FC = () => {
   const [searchName, setSearchName] = React.useState<string>("");
@@ -19,9 +19,16 @@ const StockTable: React.FC = () => {
   const [stocks, setStocks] = React.useState<IStock[]>([]);
   const [filteredStocks, setFilteredStocks] = React.useState<IStock[]>([]);
 
+  const debouncedSearchName = useDebounce(searchName, 500);
+  const debouncedSearchSymbol = useDebounce(searchSymbol, 500);
+
   React.useEffect(() => {
     fetchStockList();
   }, []);
+
+  React.useEffect(() => {
+    filterStocks(debouncedSearchName, debouncedSearchSymbol);
+  }, [debouncedSearchName, debouncedSearchSymbol]);
 
   async function fetchStockList() {
     try {
@@ -35,14 +42,12 @@ const StockTable: React.FC = () => {
 
   function handleSearchNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchName(event.target.value);
-    filterStocks(event.target.value, searchSymbol);
   }
 
   function handleSearchSymbolChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
     setSearchSymbol(event.target.value);
-    filterStocks(searchName, event.target.value);
   }
 
   function handleChangePage(

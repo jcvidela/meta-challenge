@@ -55,10 +55,7 @@ const StockTable: React.FC = () => {
     setSearchSymbol(event.target.value);
   }
 
-  function handleChangePage(
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) {
+  function handleChangePage(_: unknown , newPage: number) {
     setPage(newPage);
   }
 
